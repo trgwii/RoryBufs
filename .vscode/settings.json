@@ -2,7 +2,7 @@
 	"deno.enable": true,
 	"deno.lint": true,
 	"deno.unstable": false,
-	"deno.config": "./ts/deno.jsonc",
+	"deno.config": "./deno.jsonc",
 	"editor.formatOnSave": true,
 	"editor.defaultFormatter": "denoland.vscode-deno"
 }
