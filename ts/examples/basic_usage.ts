@@ -4,6 +4,7 @@ import { Text } from "../fields/Text.ts";
 import { Union } from "../fields/Union.ts";
 import { FixedArray } from "../fields/FixedArray.ts";
 import { ArrayList } from "../fields/ArrayList.ts";
+import { Optional } from "../fields/Optional.ts";
 import { Buf } from "../mod.ts";
 
 const proto = new Buf({
@@ -20,6 +21,7 @@ const proto = new Buf({
 		new U8(),
 		new Text(),
 	], (val) => Number(typeof val === "string")),
+	poop: new Optional(new Text()),
 });
 
 const chunk = proto.encode({
@@ -30,6 +32,7 @@ const chunk = proto.encode({
 	meme: [5, 4, 3, 2, 1, 0, 8],
 	fart: ["penis", "cock", "balls"],
 	boi: 4,
+	poop: null,
 }, 1024);
 
 console.log(chunk);
@@ -44,6 +47,7 @@ const chunk2 = proto.encode({
 	meme: [5, 4, 3, 2, 1, 0, 8],
 	fart: ["penis", "cock", "balls"],
 	boi: "LONG STRING",
+	poop: "Hello",
 }, 1024);
 
 console.log(chunk2);
