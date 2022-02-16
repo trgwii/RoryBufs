@@ -9,6 +9,6 @@ export class U32 implements Field<number> {
 		return this.size;
 	}
 	decode(buf: DataView, offset = 0) {
-		return buf.getUint32(offset);
+		return { bytesRead: this.size, value: buf.getUint32(offset) };
 	}
 }

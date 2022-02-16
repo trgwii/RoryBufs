@@ -9,6 +9,6 @@ export class I16 implements Field<number> {
 		return this.size;
 	}
 	decode(buf: DataView, offset = 0) {
-		return buf.getInt16(offset);
+		return { bytesRead: this.size, value: buf.getInt16(offset) };
 	}
 }

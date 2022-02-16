@@ -7,6 +7,6 @@ export class F32 implements Field<number> {
 		return this.size;
 	}
 	decode(buf: DataView, offset = 0) {
-		return buf.getFloat32(offset);
+		return { bytesRead: this.size, value: buf.getFloat32(offset) };
 	}
 }

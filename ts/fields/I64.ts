@@ -13,6 +13,6 @@ export class I64 implements Field<bigint> {
 		return this.size;
 	}
 	decode(buf: DataView, offset = 0) {
-		return buf.getBigInt64(offset);
+		return { bytesRead: this.size, value: buf.getBigInt64(offset) };
 	}
 }

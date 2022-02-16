@@ -7,6 +7,6 @@ export class F64 implements Field<number> {
 		return this.size;
 	}
 	decode(buf: DataView, offset = 0) {
-		return buf.getFloat64(offset);
+		return { bytesRead: this.size, value: buf.getFloat64(offset) };
 	}
 }

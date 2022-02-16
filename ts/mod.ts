@@ -7,23 +7,33 @@ export type ValueFromSchema<Schema extends Record<string, Field<unknown>>> = {
 	[K in keyof Schema]: Schema[K] extends Field<infer V> ? V : never;
 };
 
-export class Buf<Schema extends Record<string, Field<unknown>>> {
+export class Buf<
+	Schema extends Record<string, Field<unknown>>,
+> {
 	readonly version = 0;
 	readonly checksum: number;
-	readonly size: number;
+	readonly size: number | "variadic";
 	constructor(readonly schema: Schema) {
 		this.checksum = crc16(
 			new TextEncoder().encode(Object.keys(schema).join(":")),
 		);
-		this.size = 4 +
-			Object.values(this.schema).reduce((acc, f) => acc + f.size, 0);
+		const sizes = Object.values(this.schema).map((x) => x.size);
+
+		this.size = sizes.some((x) => x === "variadic") ? "variadic" : (4 +
+			sizes.reduce<number>((acc, size) => acc + (size as number), 0));
 	}
 	encode(
 		data: ValueFromSchema<Schema>,
-		buf?: Uint8Array,
+		bufOrMax?: number | Uint8Array,
 	) {
 		let offset = 0;
-		buf = buf ?? new Uint8Array(this.size);
+		if (!bufOrMax && this.size === "variadic") {
+			throw new Error("bufOrMax is required for variadic sizes");
+		}
+		const size = typeof bufOrMax === "number" ? bufOrMax : this.size as number;
+		const buf = bufOrMax instanceof Uint8Array
+			? bufOrMax
+			: new Uint8Array(size);
 		const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
 		dv.setUint16(offset, this.version);
 		offset += 2;
@@ -45,8 +55,9 @@ export class Buf<Schema extends Record<string, Field<unknown>>> {
 		const data: Record<string, unknown> = {};
 		for (const key in this.schema) {
 			const field = this.schema[key];
-			data[key] = field.decode(dv, offset);
-			offset += field.size;
+			const { bytesRead, value } = field.decode(dv, offset);
+			data[key] = value;
+			offset += bytesRead;
 		}
 		return data as ValueFromSchema<Schema>;
 	}

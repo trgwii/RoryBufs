@@ -12,7 +12,7 @@ export function assertWithin<T extends number | bigint>(
 	max: T,
 ) {
 	assert(
-		value > min && value < max,
+		value >= min && value < max,
 		String(value) + " is out of bounds",
 		RangeError,
 	);

@@ -1,33 +1,32 @@
 import type { Field } from "../field.d.ts";
-import { assert } from "../utils.ts";
-
 export class Union<A, B> implements Field<A | B> {
-	readonly size: number;
+	readonly size = "variadic";
 	constructor(
 		readonly left: Field<A>,
 		readonly right: Field<B>,
 		readonly isRight: (value: A | B) => value is B,
-	) {
-		this.size = 1 + Math.max(left.size, right.size);
-	}
+	) {}
 
 	encode(value: A | B, buf: DataView, offset = 0) {
 		const isRight = this.isRight(value);
+		const initialOffset = offset;
 		buf.setUint8(offset, Number(isRight));
 		offset += 1;
 		if (isRight) {
-			this.right.encode(value, buf, offset);
-			return this.size;
+			offset += this.right.encode(value, buf, offset);
+		} else {
+			offset += this.left.encode(value, buf, offset);
 		}
-		this.left.encode(value, buf, offset);
-		return this.size;
+		return offset - initialOffset;
 	}
 	decode(buf: DataView, offset = 0) {
 		const isRight = Boolean(buf.getUint8(offset));
 		offset += 1;
 		if (isRight) {
-			return this.right.decode(buf, offset);
+			const { bytesRead, value } = this.right.decode(buf, offset);
+			return { bytesRead: bytesRead + 1, value };
 		}
-		return this.left.decode(buf, offset);
+		const { bytesRead, value } = this.left.decode(buf, offset);
+		return { bytesRead: bytesRead + 1, value };
 	}
 }

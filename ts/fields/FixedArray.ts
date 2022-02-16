@@ -4,7 +4,10 @@ import { assert } from "../utils.ts";
 export class FixedArray<Length extends number, T>
 	implements Field<T[] & { length: Length }> {
 	readonly size: number;
-	constructor(readonly length: Length, readonly field: Field<T>) {
+	constructor(
+		readonly length: Length,
+		readonly field: Field<T> & { size: number },
+	) {
 		this.size = length * field.size;
 	}
 
@@ -18,9 +21,10 @@ export class FixedArray<Length extends number, T>
 	decode(buf: DataView, offset = 0) {
 		const items: T[] = [];
 		for (let i = 0; i < this.length; i++) {
-			items.push(this.field.decode(buf, offset));
-			offset += this.field.size;
+			const { bytesRead, value } = this.field.decode(buf, offset);
+			items.push(value);
+			offset += bytesRead;
 		}
-		return items as T[] & { length: Length };
+		return { bytesRead: this.size, value: items as T[] & { length: Length } };
 	}
 }
