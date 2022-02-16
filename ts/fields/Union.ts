@@ -1,32 +1,31 @@
 import type { Field } from "../field.d.ts";
-export class Union<A, B> implements Field<A | B> {
+import { assertWithin } from "../utils.ts";
+
+type TypeFromFields<Fields extends Field<unknown>[]> = Fields[number] extends
+	Field<infer T> ? T : never;
+export class Union<Fields extends Field<unknown>[]>
+	implements Field<TypeFromFields<Fields>> {
 	readonly size = "variadic";
 	constructor(
-		readonly left: Field<A>,
-		readonly right: Field<B>,
-		readonly isRight: (value: A | B) => value is B,
-	) {}
+		readonly fields: Fields,
+		readonly tag: (val: TypeFromFields<Fields>) => number,
+	) {
+		assertWithin(fields.length, 0, 8);
+	}
 
-	encode(value: A | B, buf: DataView, offset = 0) {
-		const isRight = this.isRight(value);
+	encode(value: TypeFromFields<Fields>, buf: DataView, offset = 0) {
+		const index = this.tag(value);
+		assertWithin(index, 0, this.fields.length);
 		const initialOffset = offset;
-		buf.setUint8(offset, Number(isRight));
+		buf.setUint8(offset, index);
 		offset += 1;
-		if (isRight) {
-			offset += this.right.encode(value, buf, offset);
-		} else {
-			offset += this.left.encode(value, buf, offset);
-		}
+		offset += this.fields[index].encode(value, buf, offset);
 		return offset - initialOffset;
 	}
 	decode(buf: DataView, offset = 0) {
-		const isRight = Boolean(buf.getUint8(offset));
+		const index = buf.getUint8(offset);
 		offset += 1;
-		if (isRight) {
-			const { bytesRead, value } = this.right.decode(buf, offset);
-			return { bytesRead: bytesRead + 1, value };
-		}
-		const { bytesRead, value } = this.left.decode(buf, offset);
-		return { bytesRead: bytesRead + 1, value };
+		const { bytesRead, value } = this.fields[index].decode(buf, offset);
+		return { bytesRead: bytesRead + 1, value: value as TypeFromFields<Fields> };
 	}
 }

@@ -10,18 +10,16 @@ const proto = new Buf({
 	id: new U8(),
 	username: new Text(),
 	props: new FixedArray(4, new U32()),
-	num: new Union(
+	num: new Union([
 		new U32(),
 		new FixedArray(4, new U8()),
-		(val): val is number[] => Array.isArray(val),
-	),
+	], (val) => Number(Array.isArray(val))),
 	meme: new ArrayList(new U8()),
 	fart: new ArrayList(new Text()),
-	boi: new Union(
+	boi: new Union([
 		new U8(),
 		new Text(),
-		(val): val is string => typeof val === "string",
-	),
+	], (val) => Number(typeof val === "string")),
 });
 
 const chunk = proto.encode({
