@@ -1,0 +1,10 @@
+{
+	"fmt": {
+		"options": {
+			"useTabs": true
+		}
+	},
+	"compilerOptions": {
+		"lib": ["deno.shared_globals"]
+	}
+}
