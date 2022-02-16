@@ -9,6 +9,6 @@ export class I8 implements Field<number> {
 		return this.size;
 	}
 	decode(buf: DataView, offset = 0) {
-		return buf.getInt8(offset);
+		return { bytesRead: this.size, value: buf.getInt8(offset) };
 	}
 }
