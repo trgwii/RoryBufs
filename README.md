@@ -19,3 +19,5 @@ example TCP or Websockets.
 ```sh
 deno run ts/examples/basic_usage.ts
 ```
+
+([ts/examples/basic_usage.ts](ts/examples/basic_usage.ts))
