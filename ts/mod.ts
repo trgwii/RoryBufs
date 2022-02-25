@@ -1,9 +1,6 @@
 import { crc16 } from "./crc16.ts";
 import type { Field, Reader, Writer } from "./field.d.ts";
-
-import { assert } from "./utils.ts";
-
-import type { ValueFromSchema } from "./ValueFromSchema.d.ts";
+import { assert, type ValueFromSchema } from "./utils.ts";
 import { Struct } from "./fields/Struct.ts";
 
 export class Buf<

@@ -1,5 +1,5 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
-import type { ValueFromSchema } from "../ValueFromSchema.d.ts";
+import type { ValueFromSchema } from "../utils.ts";
 
 export class Struct<Schema extends Record<string, Field<unknown>>>
 	implements Field<ValueFromSchema<Schema>> {
