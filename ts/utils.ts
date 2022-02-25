@@ -1,4 +1,4 @@
-import type { Field, Writer } from "./field.d.ts";
+import type { Field, Reader, Writer } from "./field.d.ts";
 
 export function assert(
 	ok: boolean,
@@ -20,9 +20,19 @@ export function assertWithin<T extends number | bigint>(
 	);
 }
 
+export async function readAll(stream: Reader, buf: Uint8Array) {
+	let bytesRead = 0;
+	while (bytesRead < buf.byteLength) {
+		const result = await stream.read(buf.subarray(bytesRead));
+		if (result === null) throw new Error("End of stream");
+		bytesRead += result;
+	}
+	return bytesRead;
+}
+
 export async function writeAll(stream: Writer, buf: Uint8Array) {
 	let bytesWritten = 0;
-	while (bytesWritten < buf.length) {
+	while (bytesWritten < buf.byteLength) {
 		bytesWritten += await stream.write(buf.subarray(bytesWritten));
 	}
 	return bytesWritten;

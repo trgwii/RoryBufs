@@ -1,5 +1,5 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
-import { assert, writeAll } from "../utils.ts";
+import { assert, readAll, writeAll } from "../utils.ts";
 
 export class FixedText implements Field<string> {
 	constructor(readonly size: number) {}
@@ -31,9 +31,8 @@ export class FixedText implements Field<string> {
 	}
 	async read(stream: Reader) {
 		const buf = new ArrayBuffer(this.size);
-		const bytesRead = await stream.read(new Uint8Array(buf));
+		await readAll(stream, new Uint8Array(buf));
 		const dv = new DataView(buf);
-		if (bytesRead === null) throw new Error("End of stream");
 		return this.decode(dv).value;
 	}
 }

@@ -1,5 +1,5 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
-import { assertWithin, writeAll } from "../utils.ts";
+import { assertWithin, readAll, writeAll } from "../utils.ts";
 
 export class I64 implements Field<bigint> {
 	readonly size = 8;
@@ -23,9 +23,8 @@ export class I64 implements Field<bigint> {
 	}
 	async read(stream: Reader) {
 		const buf = new ArrayBuffer(this.size);
-		const bytesRead = await stream.read(new Uint8Array(buf));
+		await readAll(stream, new Uint8Array(buf));
 		const dv = new DataView(buf);
-		if (bytesRead === null) throw new Error("End of stream");
 		return this.decode(dv).value;
 	}
 }

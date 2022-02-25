@@ -1,5 +1,5 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
-import { writeAll } from "../utils.ts";
+import { readAll, writeAll } from "../utils.ts";
 
 export class DateTime implements Field<Date> {
 	readonly size = 8;
@@ -18,9 +18,8 @@ export class DateTime implements Field<Date> {
 	}
 	async read(stream: Reader) {
 		const buf = new ArrayBuffer(this.size);
-		const bytesRead = await stream.read(new Uint8Array(buf));
+		await readAll(stream, new Uint8Array(buf));
 		const dv = new DataView(buf);
-		if (bytesRead === null) throw new Error("End of stream");
 		return this.decode(dv).value;
 	}
 }
