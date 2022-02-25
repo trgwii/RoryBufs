@@ -5,7 +5,7 @@ import type { ValueFromField } from "../utils.ts";
 export class ArrayList<F extends Field<unknown>>
 	implements Field<ValueFromField<F>[]> {
 	readonly size = "variadic";
-	#u32 = new U32();
+	readonly length = new U32();
 	constructor(
 		readonly field: F,
 	) {}
@@ -35,14 +35,14 @@ export class ArrayList<F extends Field<unknown>>
 		};
 	}
 	async write(items: ValueFromField<F>[], stream: Writer) {
-		let bytesWritten = await this.#u32.write(items.length, stream);
+		let bytesWritten = await this.length.write(items.length, stream);
 		for (const value of items) {
 			bytesWritten += await this.field.write(value, stream);
 		}
 		return bytesWritten;
 	}
 	async read(stream: Reader) {
-		const length = await this.#u32.read(stream);
+		const length = await this.length.read(stream);
 		const items: ValueFromField<F>[] = [];
 		for (let i = 0; i < length; i++) {
 			const value = await this.field.read(stream);
