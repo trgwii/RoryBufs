@@ -3,9 +3,7 @@ import { Field } from "./field.d.ts";
 
 import { assert } from "./utils.ts";
 
-export type ValueFromSchema<Schema extends Record<string, Field<unknown>>> = {
-	[K in keyof Schema]: Schema[K] extends Field<infer V> ? V : never;
-};
+import type { ValueFromSchema } from "./ValueFromSchema.d.ts";
 
 export class Buf<
 	Schema extends Record<string, Field<unknown>>,
