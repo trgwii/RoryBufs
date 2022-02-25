@@ -10,4 +10,10 @@ export class Null implements Field<null> {
 	decode() {
 		return { bytesRead: 0, value: null };
 	}
+	write(value: null) {
+		return Promise.resolve(this.encode(value));
+	}
+	read() {
+		return Promise.resolve(this.decode().value);
+	}
 }

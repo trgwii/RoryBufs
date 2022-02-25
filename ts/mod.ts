@@ -1,5 +1,5 @@
 import { crc16 } from "./crc16.ts";
-import { Field } from "./field.d.ts";
+import type { Field, Reader, Writer } from "./field.d.ts";
 
 import { assert } from "./utils.ts";
 
@@ -48,5 +48,11 @@ export class Buf<
 		assert(this.checksum === dv.getUint16(offset), "Invalid checksum");
 		offset += 2;
 		return this.struct.decode(dv, offset).value;
+	}
+	write(data: ValueFromSchema<Schema>, stream: Writer) {
+		return this.struct.write(data, stream);
+	}
+	read(stream: Reader) {
+		return this.struct.read(stream);
 	}
 }

@@ -1,7 +1,9 @@
-import type { Field } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.d.ts";
+import { U32 } from "./U32.ts";
 
 export class ArrayList<T> implements Field<T[]> {
 	readonly size = "variadic";
+	#u32 = new U32();
 	constructor(
 		readonly field: Field<T>,
 	) {}
@@ -26,5 +28,20 @@ export class ArrayList<T> implements Field<T[]> {
 			offset += bytesRead;
 		}
 		return { bytesRead: offset - initialOffset, value: items as T[] };
+	}
+	async write(items: T[], stream: Writer) {
+		let bytesWritten = await this.#u32.write(items.length, stream);
+		for (const value of items) {
+			bytesWritten += await this.field.write(value, stream);
+		}
+		return bytesWritten;
+	}
+	async read(stream: Reader) {
+		const length = await this.#u32.read(stream);
+		const items: T[] = [];
+		for (let i = 0; i < length; i++) {
+			items.push(await this.field.read(stream));
+		}
+		return items;
 	}
 }

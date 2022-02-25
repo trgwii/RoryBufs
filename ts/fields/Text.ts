@@ -1,4 +1,4 @@
-import type { Field } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.d.ts";
 import { ArrayList } from "./ArrayList.ts";
 import { U8 } from "./U8.ts";
 
@@ -14,5 +14,12 @@ export class Text implements Field<string> {
 			bytesRead,
 			value: new TextDecoder().decode(new Uint8Array(value)),
 		};
+	}
+	write(value: string, stream: Writer) {
+		return this.field.write([...new TextEncoder().encode(value)], stream);
+	}
+	async read(stream: Reader) {
+		const value = await this.field.read(stream);
+		return new TextDecoder().decode(new Uint8Array(value));
 	}
 }

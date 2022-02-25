@@ -1,4 +1,4 @@
-import type { Field } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.d.ts";
 import { Null } from "./Null.ts";
 import { Union } from "./Union.ts";
 
@@ -16,5 +16,11 @@ export class Optional<T> implements Field<T | null> {
 	}
 	decode(buf: DataView, offset?: number) {
 		return this.field.decode(buf, offset);
+	}
+	write(value: T | null, stream: Writer) {
+		return this.field.write(value, stream);
+	}
+	read(stream: Reader) {
+		return this.field.read(stream);
 	}
 }

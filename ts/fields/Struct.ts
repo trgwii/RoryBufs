@@ -1,4 +1,4 @@
-import type { Field } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.d.ts";
 import type { ValueFromSchema } from "../ValueFromSchema.d.ts";
 
 export class Struct<Schema extends Record<string, Field<unknown>>>
@@ -36,5 +36,20 @@ export class Struct<Schema extends Record<string, Field<unknown>>>
 			bytesRead: offset - initialOffset,
 			value: data as ValueFromSchema<Schema>,
 		};
+	}
+	async write(data: ValueFromSchema<Schema>, stream: Writer) {
+		let bytesWritten = 0;
+		for (const key in this.schema) {
+			const value = data[key] as unknown;
+			bytesWritten += await this.schema[key].write(value, stream);
+		}
+		return bytesWritten;
+	}
+	async read(stream: Reader) {
+		const data: Record<string, unknown> = {};
+		for (const key in this.schema) {
+			data[key] = await this.schema[key].read(stream);
+		}
+		return data as ValueFromSchema<Schema>;
 	}
 }

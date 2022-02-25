@@ -1,5 +1,5 @@
-import type { Field } from "../field.d.ts";
-import { assert } from "../utils.ts";
+import type { Field, Reader, Writer } from "../field.d.ts";
+import { assert, writeAll } from "../utils.ts";
 
 export class FixedArray<Length extends number, T>
 	implements Field<T[] & { length: Length }> {
@@ -26,5 +26,18 @@ export class FixedArray<Length extends number, T>
 			offset += bytesRead;
 		}
 		return { bytesRead: this.size, value: items as T[] & { length: Length } };
+	}
+	write(items: T[], stream: Writer) {
+		const buf = new ArrayBuffer(this.size);
+		const dv = new DataView(buf);
+		this.encode(items, dv);
+		return writeAll(stream, new Uint8Array(buf));
+	}
+	async read(stream: Reader) {
+		const buf = new ArrayBuffer(this.size);
+		const bytesRead = await stream.read(new Uint8Array(buf));
+		const dv = new DataView(buf);
+		if (bytesRead === null) throw new Error("End of stream");
+		return this.decode(dv).value;
 	}
 }
