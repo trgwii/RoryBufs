@@ -2,12 +2,15 @@ import { crc16 } from "./crc16.ts";
 import type { Field, Reader, Writer } from "./field.d.ts";
 import { assert, type ValueFromSchema } from "./utils.ts";
 import { Struct } from "./fields/Struct.ts";
+import { U16 } from "./fields/U16.ts";
 
 export class Buf<
 	Schema extends Record<string, Field<unknown>>,
 > {
 	readonly version = 0;
+	readonly versionField = new U16();
 	readonly checksum: number;
+	readonly checksumField = new U16();
 	readonly size: number | "variadic";
 	readonly struct: Struct<Schema>;
 	constructor(readonly schema: Schema) {
@@ -21,7 +24,6 @@ export class Buf<
 		data: ValueFromSchema<Schema>,
 		bufOrMax?: number | Uint8Array,
 	) {
-		let offset = 0;
 		if (!bufOrMax && this.size === "variadic") {
 			throw new Error("bufOrMax is required for variadic sizes");
 		}
@@ -30,26 +32,33 @@ export class Buf<
 			? bufOrMax
 			: new Uint8Array(size);
 		const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-		dv.setUint16(offset, this.version);
-		offset += 2;
-		dv.setUint16(offset, this.checksum);
-		offset += 2;
+		let offset = 0;
+		offset += this.versionField.encode(this.version, dv, offset);
+		offset += this.checksumField.encode(this.checksum, dv, offset);
 		offset += this.struct.encode(data, dv, offset);
 		return buf.subarray(0, offset);
 	}
 	decode(buf: Uint8Array): ValueFromSchema<Schema> {
-		let offset = 0;
 		const dv = new DataView(buf.buffer, buf.byteOffset, buf.byteLength);
-		assert(this.version === dv.getUint16(offset), "Invalid buffer version");
-		offset += 2;
-		assert(this.checksum === dv.getUint16(offset), "Invalid checksum");
-		offset += 2;
+		let offset = 0;
+		const v = this.versionField.decode(dv, offset);
+		offset += v.bytesRead;
+		assert(this.version === v.value, "Invalid buffer version");
+		const c = this.checksumField.decode(dv, offset);
+		offset += c.bytesRead;
+		assert(this.checksum === c.value, "Invalid checksum");
 		return this.struct.decode(dv, offset).value;
 	}
-	write(data: ValueFromSchema<Schema>, stream: Writer) {
+	async write(data: ValueFromSchema<Schema>, stream: Writer) {
+		await this.versionField.write(this.version, stream);
+		await this.checksumField.write(this.checksum, stream);
 		return this.struct.write(data, stream);
 	}
-	read(stream: Reader) {
+	async read(stream: Reader) {
+		const version = await this.versionField.read(stream);
+		assert(this.version === version, "Invalid buffer version");
+		const checksum = await this.checksumField.read(stream);
+		assert(this.checksum === checksum, "Invalid checksum");
 		return this.struct.read(stream);
 	}
 }
