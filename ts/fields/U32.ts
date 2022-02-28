@@ -21,6 +21,6 @@ export class U32 implements Field<number> {
 		const buf = new ArrayBuffer(this.size);
 		await readAll(stream, new Uint8Array(buf));
 		const dv = new DataView(buf);
-		return this.decode(dv).value;
+		return this.decode(dv);
 	}
 }

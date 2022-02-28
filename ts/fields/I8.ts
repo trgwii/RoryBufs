@@ -1,5 +1,5 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
-import { assertWithin, readAll } from "../utils.ts";
+import { assertWithin } from "../utils.ts";
 
 export class I8 implements Field<number> {
 	readonly size = 1;
@@ -22,6 +22,6 @@ export class I8 implements Field<number> {
 		const bytesRead = await stream.read(new Uint8Array(buf));
 		if (bytesRead === null) throw new Error("End of stream");
 		const dv = new DataView(buf);
-		return this.decode(dv).value;
+		return this.decode(dv);
 	}
 }

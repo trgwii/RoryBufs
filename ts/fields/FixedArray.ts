@@ -37,6 +37,6 @@ export class FixedArray<Length extends number, T>
 		const buf = new ArrayBuffer(this.size);
 		await readAll(stream, new Uint8Array(buf));
 		const dv = new DataView(buf);
-		return this.decode(dv).value;
+		return this.decode(dv);
 	}
 }

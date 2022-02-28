@@ -40,7 +40,9 @@ export class Union<Fields extends Field<unknown>[]>
 	}
 	async read(stream: Reader) {
 		const index = await this.#u8.read(stream);
-		const value = await this.fields[index].read(stream);
-		return value as ValueFromFields<Fields>;
+		let bytesRead = index.bytesRead;
+		const result = await this.fields[index.value].read(stream);
+		bytesRead += result.bytesRead;
+		return { bytesRead, value: result.value as ValueFromFields<Fields> };
 	}
 }

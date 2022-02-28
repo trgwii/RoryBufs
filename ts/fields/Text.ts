@@ -19,7 +19,10 @@ export class Text implements Field<string> {
 		return this.field.write([...new TextEncoder().encode(value)], stream);
 	}
 	async read(stream: Reader) {
-		const value = await this.field.read(stream);
-		return new TextDecoder().decode(new Uint8Array(value));
+		const result = await this.field.read(stream);
+		return {
+			bytesRead: result.bytesRead,
+			value: new TextDecoder().decode(new Uint8Array(result.value)),
+		};
 	}
 }

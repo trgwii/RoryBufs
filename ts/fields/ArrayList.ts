@@ -42,12 +42,15 @@ export class ArrayList<F extends Field<unknown>>
 		return bytesWritten;
 	}
 	async read(stream: Reader) {
+		let bytesRead = 0;
 		const length = await this.length.read(stream);
+		bytesRead += length.bytesRead;
 		const items: ValueFromField<F>[] = [];
-		for (let i = 0; i < length; i++) {
-			const value = await this.field.read(stream);
-			items.push(value as ValueFromField<F>);
+		for (let i = 0; i < length.value; i++) {
+			const result = await this.field.read(stream);
+			bytesRead += result.bytesRead;
+			items.push(result.value as ValueFromField<F>);
 		}
-		return items;
+		return { bytesRead, value: items };
 	}
 }

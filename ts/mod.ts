@@ -56,9 +56,9 @@ export class Buf<
 	}
 	async read(stream: Reader) {
 		const version = await this.versionField.read(stream);
-		assert(this.version === version, "Invalid buffer version");
+		assert(this.version === version.value, "Invalid buffer version");
 		const checksum = await this.checksumField.read(stream);
-		assert(this.checksum === checksum, "Invalid checksum");
+		assert(this.checksum === checksum.value, "Invalid checksum");
 		return this.struct.read(stream);
 	}
 }

@@ -11,5 +11,5 @@ export interface Field<T> {
 	encode(value: T, buf: DataView, offset?: number): number;
 	decode(buf: DataView, offset?: number): { bytesRead: number; value: T };
 	write(value: T, stream: Writer): Promise<number>;
-	read(stream: Reader): Promise<T>;
+	read(stream: Reader): Promise<{ bytesRead: number; value: T }>;
 }

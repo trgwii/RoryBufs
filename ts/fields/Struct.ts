@@ -46,10 +46,13 @@ export class Struct<Schema extends Record<string, Field<unknown>>>
 		return bytesWritten;
 	}
 	async read(stream: Reader) {
+		let bytesRead = 0;
 		const data: Record<string, unknown> = {};
 		for (const key in this.schema) {
-			data[key] = await this.schema[key].read(stream);
+			const result = await this.schema[key].read(stream);
+			bytesRead += result.bytesRead;
+			data[key] = result.value;
 		}
-		return data as ValueFromSchema<Schema>;
+		return { bytesRead, value: data as ValueFromSchema<Schema> };
 	}
 }

@@ -14,6 +14,6 @@ export class Null implements Field<null> {
 		return Promise.resolve(this.encode(value));
 	}
 	read() {
-		return Promise.resolve(this.decode().value);
+		return Promise.resolve(this.decode());
 	}
 }
