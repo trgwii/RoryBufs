@@ -2,9 +2,12 @@ import type { Field, Reader, Writer } from "../field.d.ts";
 import { ArrayList } from "./ArrayList.ts";
 import { U8 } from "./U8.ts";
 
-export class Text implements Field<string> {
+export class Text<Len extends Field<number | bigint>> implements Field<string> {
 	readonly size = "variadic";
-	readonly field = new ArrayList(new U8());
+	readonly field: ArrayList<U8, Len>;
+	constructor(length?: Len) {
+		this.field = new ArrayList(new U8(), length);
+	}
 	encode(value: string, buf: DataView, offset = 0) {
 		return this.field.encode([...new TextEncoder().encode(value)], buf, offset);
 	}

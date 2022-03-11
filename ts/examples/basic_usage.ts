@@ -9,7 +9,7 @@ import { Buf } from "../mod.ts";
 
 const proto = new Buf({
 	id: new U8(),
-	username: new Text(),
+	username: new Text(new U8()),
 	props: new FixedArray(4, new U32()),
 	num: new Union([
 		new U32(),
@@ -41,7 +41,8 @@ console.log(JSON.stringify(decoded).length, chunk.byteLength, decoded);
 
 const chunk2 = proto.encode({
 	id: 72,
-	username: "TRGWII",
+	username:
+		"TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO LONG TOO",
 	props: [1, 2, 3, 4],
 	num: [50, 84, 72, 93],
 	meme: [5, 4, 3, 2, 1, 0, 8],

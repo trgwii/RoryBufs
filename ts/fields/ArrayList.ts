@@ -2,18 +2,20 @@ import type { Field, Reader, Writer } from "../field.d.ts";
 import { U32 } from "./U32.ts";
 import type { ValueFromField } from "../utils.ts";
 
-export class ArrayList<F extends Field<unknown>>
-	implements Field<ValueFromField<F>[]> {
+export class ArrayList<
+	F extends Field<unknown>,
+	Len extends Field<number | bigint> = U32,
+> implements Field<ValueFromField<F>[]> {
 	readonly size = "variadic";
-	readonly length = new U32();
 	constructor(
 		readonly field: F,
+		//@ts-expect-error No obvious solution to this, bugged if user does `new ArrayList<F, SomeLen>(f);` (passes the Len generic but not the value)
+		readonly length: Len = new U32(),
 	) {}
 
 	encode(items: ValueFromField<F>[], buf: DataView, offset = 0) {
 		const initialOffset = offset;
-		buf.setUint32(offset, items.length);
-		offset += 4;
+		offset += this.length.encode(items.length, buf, offset);
 		for (const value of items) {
 			offset += this.field.encode(value, buf, offset);
 		}
@@ -22,8 +24,8 @@ export class ArrayList<F extends Field<unknown>>
 	decode(buf: DataView, offset = 0) {
 		const initialOffset = offset;
 		const items: ValueFromField<F>[] = [];
-		const length = buf.getUint32(offset);
-		offset += 4;
+		const { bytesRead, value: length } = this.length.decode(buf, offset);
+		offset += bytesRead;
 		for (let i = 0; i < length; i++) {
 			const { bytesRead, value } = this.field.decode(buf, offset);
 			items.push(value as ValueFromField<F>);
