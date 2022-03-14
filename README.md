@@ -25,3 +25,4 @@ deno run ts/examples/basic_usage.ts
 ## Demo:
 
 ![](assets/Reading_Zig_struct.png)
+![](assets/Reading_C_struct.png)
