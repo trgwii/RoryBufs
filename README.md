@@ -21,3 +21,7 @@ deno run ts/examples/basic_usage.ts
 ```
 
 ([ts/examples/basic_usage.ts](ts/examples/basic_usage.ts))
+
+## Demo:
+
+![](assets/Reading_Zig_struct.png)
