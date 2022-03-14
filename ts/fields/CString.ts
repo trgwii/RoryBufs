@@ -22,7 +22,7 @@ export class CString implements Field<string> {
 		const idx = _buf.indexOf(0);
 		if (idx === -1) throw new Error("Invalid C String - missing \\0");
 		return {
-			bytesRead: idx,
+			bytesRead: idx + 1,
 			value: new TextDecoder().decode(_buf.subarray(0, idx)),
 		};
 	}
@@ -40,7 +40,7 @@ export class CString implements Field<string> {
 			if (result === null) throw new Error("Invalid C string - EOF");
 			if (p[0] === 0) {
 				return {
-					bytesRead: buf.length,
+					bytesRead: buf.length + 1,
 					value: new TextDecoder().decode(new Uint8Array(buf)),
 				};
 			}
