@@ -54,6 +54,7 @@ export class Buf<
 		return this.struct.decode(dv, offset).value;
 	}
 	async write(data: ValueFromSchema<Schema>, stream: Writer) {
+		this.struct.validate(data);
 		await this.versionField.write(this.version, stream);
 		await this.checksumField.write(this.checksum, stream);
 		return this.struct.write(data, stream);
