@@ -11,6 +11,9 @@ export class Optional<T> implements Field<T | null> {
 			(val) => val == null ? 0 : 1,
 		);
 	}
+	validate(value: T | null) {
+		this.field.validate(value);
+	}
 	encode(value: T | null, buf: DataView, offset?: number) {
 		return this.field.encode(value, buf, offset);
 	}

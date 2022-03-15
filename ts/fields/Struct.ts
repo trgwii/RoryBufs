@@ -1,5 +1,5 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
-import type { ValueFromSchema } from "../utils.ts";
+import { mapError, type ValueFromSchema } from "../utils.ts";
 
 export class Struct<Schema extends Record<string, Field<unknown>>>
 	implements Field<ValueFromSchema<Schema>> {
@@ -10,7 +10,15 @@ export class Struct<Schema extends Record<string, Field<unknown>>>
 		this.size = sizes.some((x) => x === "variadic") ? "variadic" : (4 +
 			sizes.reduce<number>((acc, size) => acc + (size as number), 0));
 	}
-
+	validate(data: ValueFromSchema<Schema>) {
+		for (const key in this.schema) {
+			const value = data[key] as unknown;
+			mapError(
+				`Invalid property '${key}'`,
+				() => this.schema[key].validate(value),
+			);
+		}
+	}
 	encode(
 		data: ValueFromSchema<Schema>,
 		dv: DataView,

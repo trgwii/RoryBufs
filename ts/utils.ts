@@ -8,6 +8,20 @@ export function assert(
 	if (!ok) throw new Err(message);
 }
 
+export function mapError<R, F extends () => R>(msg: string, f: F): R {
+	try {
+		return f();
+	} catch (_err: unknown) {
+		if (typeof _err === "object" && _err && "message" in _err) {
+			const err = _err as Error;
+			if (typeof err.message === "string") {
+				err.message = msg + ": " + err.message;
+			}
+		}
+		throw _err;
+	}
+}
+
 export function assertWithin<T extends number | bigint>(
 	value: T,
 	min: T,

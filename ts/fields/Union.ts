@@ -10,12 +10,15 @@ export class Union<Fields extends Field<unknown>[]>
 		readonly fields: Fields,
 		readonly tag: (val: ValueFromFields<Fields>) => number,
 	) {
-		assertWithin(fields.length, 0, 255);
+		this.#u8.validate(fields.length);
 	}
-
-	encode(value: ValueFromFields<Fields>, buf: DataView, offset = 0) {
+	validate(value: ValueFromFields<Fields>) {
 		const index = this.tag(value);
 		assertWithin(index, 0, this.fields.length);
+		this.fields[index].validate(value);
+	}
+	encode(value: ValueFromFields<Fields>, buf: DataView, offset = 0) {
+		const index = this.tag(value);
 		const initialOffset = offset;
 		buf.setUint8(offset, index);
 		offset += 1;
@@ -33,7 +36,6 @@ export class Union<Fields extends Field<unknown>[]>
 	}
 	async write(value: ValueFromFields<Fields>, stream: Writer) {
 		const index = this.tag(value);
-		assertWithin(index, 0, this.fields.length);
 		let bytesWritten = await this.#u8.write(index, stream);
 		bytesWritten += await this.fields[index].write(value, stream);
 		return bytesWritten;

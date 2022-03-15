@@ -4,8 +4,10 @@ import { assertWithin, readAll, writeAll } from "../utils.ts";
 export class I16 implements Field<number> {
 	readonly size = 2;
 	constructor(readonly littleEndian = false) {}
-	encode(value: number, buf: DataView, offset = 0) {
+	validate(value: number) {
 		assertWithin(value, -0x10000 / 2, 0x10000 / 2 - 1);
+	}
+	encode(value: number, buf: DataView, offset = 0) {
 		buf.setInt16(offset, value, this.littleEndian);
 		return this.size;
 	}

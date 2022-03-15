@@ -1,5 +1,5 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
-import { assert, readAll, writeAll } from "../utils.ts";
+import { assert, mapError, readAll, writeAll } from "../utils.ts";
 
 export class FixedArray<Length extends number, T>
 	implements Field<T[] & { length: Length }> {
@@ -10,9 +10,17 @@ export class FixedArray<Length extends number, T>
 	) {
 		this.size = length * field.size;
 	}
-
-	encode(items: T[], buf: DataView, offset = 0) {
+	validate(items: T[]) {
 		assert(this.length === items.length, "Wrong array size");
+		for (let i = 0; i < items.length; i++) {
+			const value = items[i];
+			mapError(
+				`Invalid array item at index ${i}`,
+				() => this.field.validate(value),
+			);
+		}
+	}
+	encode(items: T[], buf: DataView, offset = 0) {
 		for (const value of items) {
 			offset += this.field.encode(value, buf, offset);
 		}

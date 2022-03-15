@@ -1,8 +1,11 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
-import { readAll, writeAll } from "../utils.ts";
+import { assert, readAll, writeAll } from "../utils.ts";
 
 export class DateTime implements Field<Date> {
 	readonly size = 8;
+	validate(value: Date) {
+		assert(!Number.isNaN(value.getTime()), "Invalid Date");
+	}
 	encode(value: Date, buf: DataView, offset = 0) {
 		buf.setFloat64(offset, value.getTime());
 		return this.size;

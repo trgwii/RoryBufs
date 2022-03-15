@@ -8,6 +8,10 @@ export class Text<Len extends Field<number | bigint>> implements Field<string> {
 	constructor(length?: Len) {
 		this.field = new ArrayList(new U8(), length);
 	}
+	validate(value: string) {
+		this.field.length.validate(value.length);
+		this.field.validate([...new TextEncoder().encode(value)]);
+	}
 	encode(value: string, buf: DataView, offset = 0) {
 		return this.field.encode([...new TextEncoder().encode(value)], buf, offset);
 	}

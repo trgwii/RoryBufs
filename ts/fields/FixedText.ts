@@ -3,8 +3,14 @@ import { assert, readAll, writeAll } from "../utils.ts";
 
 export class FixedText implements Field<string> {
 	constructor(readonly size: number) {}
+	validate(value: string) {
+		assert(
+			value.length <= this.size,
+			`string is too long (got: ${value.length}, max: ${this.size})`,
+		);
+	}
 	encode(value: string, buf: DataView, offset = 0) {
-		assert(value.length <= this.size, value + " is too long");
+		this.validate(value);
 		const dest = new Uint8Array(buf.buffer, buf.byteOffset + offset, this.size);
 		const { written } = new TextEncoder().encodeInto(value, dest);
 		if (written < this.size) dest[written] = 0;

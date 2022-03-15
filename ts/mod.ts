@@ -13,12 +13,15 @@ export class Buf<
 	readonly checksumField = new U16();
 	readonly size: number | "variadic";
 	readonly struct: Struct<Schema>;
-	constructor(readonly schema: Schema) {
+	constructor(schema: Schema) {
 		this.struct = new Struct(schema);
 		this.checksum = crc16(
 			new TextEncoder().encode(Object.keys(schema).join(":")),
 		);
 		this.size = this.struct.size;
+	}
+	validate(data: ValueFromSchema<Schema>) {
+		this.struct.validate(data);
 	}
 	encode(
 		data: ValueFromSchema<Schema>,
@@ -27,6 +30,7 @@ export class Buf<
 		if (!bufOrMax && this.size === "variadic") {
 			throw new Error("bufOrMax is required for variadic sizes");
 		}
+		this.struct.validate(data);
 		const size = typeof bufOrMax === "number" ? bufOrMax : this.size as number;
 		const buf = bufOrMax instanceof Uint8Array
 			? bufOrMax

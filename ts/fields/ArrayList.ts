@@ -1,6 +1,6 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
 import { U32 } from "./U32.ts";
-import type { ValueFromField } from "../utils.ts";
+import { mapError, type ValueFromField } from "../utils.ts";
 
 export class ArrayList<
 	F extends Field<unknown>,
@@ -12,7 +12,16 @@ export class ArrayList<
 		//@ts-expect-error No obvious solution to this, bugged if user does `new ArrayList<F, SomeLen>(f);` (passes the Len generic but not the value)
 		readonly length: Len = new U32(),
 	) {}
-
+	validate(items: ValueFromField<F>[]) {
+		mapError("Invalid array length", () => this.length.validate(items.length));
+		for (let i = 0; i < items.length; i++) {
+			const value = items[i];
+			mapError(
+				`Invalid array item at index ${i}`,
+				() => this.field.validate(value),
+			);
+		}
+	}
 	encode(items: ValueFromField<F>[], buf: DataView, offset = 0) {
 		const initialOffset = offset;
 		offset += this.length.encode(items.length, buf, offset);

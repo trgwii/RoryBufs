@@ -3,8 +3,10 @@ import { assertWithin } from "../utils.ts";
 
 export class U8 implements Field<number> {
 	readonly size = 1;
-	encode(value: number, buf: DataView, offset = 0) {
+	validate(value: number) {
 		assertWithin(value, 0, 0xFF);
+	}
+	encode(value: number, buf: DataView, offset = 0) {
 		buf.setUint8(offset, value);
 		return this.size;
 	}

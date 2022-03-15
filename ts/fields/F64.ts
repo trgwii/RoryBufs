@@ -1,8 +1,11 @@
 import type { Field, Reader, Writer } from "../field.d.ts";
-import { readAll, writeAll } from "../utils.ts";
+import { assert, readAll, writeAll } from "../utils.ts";
 
 export class F64 implements Field<number> {
 	readonly size = 8;
+	validate(value: number) {
+		assert(!Number.isNaN(value), "NaN");
+	}
 	encode(value: number, buf: DataView, offset = 0) {
 		buf.setFloat64(offset, value);
 		return this.size;

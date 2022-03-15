@@ -4,12 +4,14 @@ import { assertWithin, readAll, writeAll } from "../utils.ts";
 export class I64 implements Field<bigint> {
 	readonly size = 8;
 	constructor(readonly littleEndian = false) {}
-	encode(value: bigint, buf: DataView, offset = 0) {
+	validate(value: bigint) {
 		assertWithin(
 			value,
 			-0x10000000000000000n / 2n,
 			0x10000000000000000n / 2n - 1n,
 		);
+	}
+	encode(value: bigint, buf: DataView, offset = 0) {
 		buf.setBigInt64(offset, value, this.littleEndian);
 		return this.size;
 	}
