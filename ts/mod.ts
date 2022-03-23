@@ -18,7 +18,9 @@ export class Buf<
 		this.checksum = crc16(
 			new TextEncoder().encode(Object.keys(schema).join(":")),
 		);
-		this.size = this.struct.size;
+		this.size = typeof this.struct.size === "number"
+			? this.struct.size + 4
+			: this.struct.size;
 	}
 	validate(data: ValueFromSchema<Schema>) {
 		this.struct.validate(data);

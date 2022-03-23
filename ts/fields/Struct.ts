@@ -7,8 +7,9 @@ export class Struct<Schema extends Record<string, Field<unknown>>>
 	constructor(readonly schema: Schema) {
 		const sizes = Object.values(this.schema).map((x) => x.size);
 
-		this.size = sizes.some((x) => x === "variadic") ? "variadic" : (4 +
-			sizes.reduce<number>((acc, size) => acc + (size as number), 0));
+		this.size = sizes.some((x) => x === "variadic")
+			? "variadic"
+			: sizes.reduce<number>((acc, size) => acc + (size as number), 0);
 	}
 	validate(data: ValueFromSchema<Schema>) {
 		for (const key in this.schema) {
