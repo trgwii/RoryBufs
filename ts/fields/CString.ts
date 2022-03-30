@@ -11,8 +11,9 @@ export class CString implements Field<string> {
 			buf.byteLength - offset,
 		);
 		const result = new TextEncoder().encodeInto(value, _buf);
-		_buf[result.written] = 0;
-		return result.written + 1;
+		// Non-null assertions needed for npm build
+		_buf[result.written!] = 0;
+		return result.written! + 1;
 	}
 	decode(buf: DataView, offset = 0) {
 		const _buf = new Uint8Array(

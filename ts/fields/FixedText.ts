@@ -13,7 +13,8 @@ export class FixedText implements Field<string> {
 		this.validate(value);
 		const dest = new Uint8Array(buf.buffer, buf.byteOffset + offset, this.size);
 		const { written } = new TextEncoder().encodeInto(value, dest);
-		if (written < this.size) dest[written] = 0;
+		// Non-null assertions needed for npm build
+		if (written! < this.size) dest[written!] = 0;
 		return this.size;
 	}
 	decode(buf: DataView, offset = 0) {
