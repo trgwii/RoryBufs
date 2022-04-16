@@ -1,4 +1,4 @@
-// deno run --no-prompt --allow-env=HOME,DENO_AUTH_TOKENS,XDG_CACHE_HOME,DENO_DIR --allow-read --allow-write --allow-run=npm ts/scripts/build_npm.ts
+// deno run --no-prompt --allow-env=HOME,DENO_AUTH_TOKENS,XDG_CACHE_HOME,DENO_DIR,USERPROFILE,LOCALAPPDATA --allow-read --allow-write --allow-run=npm,cmd ts/scripts/build_npm.ts
 
 ///<reference lib="deno.ns" />
 import { build, emptyDir } from "https://deno.land/x/dnt@0.22.0/mod.ts";
@@ -15,7 +15,7 @@ await build({
 	package: {
 		// package.json properties
 		name: "rorybufs",
-		version: "0.0.1",
+		version: "0.0.2",
 		description: "An efficient binary serialization format.",
 		license: "MIT",
 		repository: {
