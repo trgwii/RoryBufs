@@ -1,4 +1,4 @@
-import type { Field, Reader, Writer } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.ts";
 import { assertWithin, readAll, writeAll } from "../utils.ts";
 
 export class U16 implements Field<number> {

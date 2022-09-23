@@ -1,4 +1,4 @@
-import type { Field, Reader, Writer } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.ts";
 import { assertWithin } from "../utils.ts";
 
 export class I8 implements Field<number> {

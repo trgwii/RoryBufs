@@ -21,7 +21,7 @@ export { Union } from "./fields/Union.ts";
 
 export { Buf } from "./mod.ts";
 
-import type { Reader, Writer } from "./field.d.ts";
+import type { Reader, Writer } from "./field.ts";
 export type { Reader, Writer };
 
 declare class Readable {

@@ -1,4 +1,4 @@
-import type { Field, Reader, Writer } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.ts";
 import { assert, mapError, readAll, writeAll } from "../utils.ts";
 
 export class FixedArray<Length extends number, T>

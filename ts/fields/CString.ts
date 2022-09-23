@@ -1,4 +1,4 @@
-import type { Field, Reader, Writer } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.ts";
 import { writeAll } from "../utils.ts";
 
 export class CString implements Field<string> {

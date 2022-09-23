@@ -1,4 +1,4 @@
-import type { Field, Reader, Writer } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.ts";
 import { ArrayList } from "./ArrayList.ts";
 import { U8 } from "./U8.ts";
 

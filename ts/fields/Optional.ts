@@ -1,4 +1,4 @@
-import type { Field, Reader, Writer } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.ts";
 import { Null } from "./Null.ts";
 import { Union } from "./Union.ts";
 

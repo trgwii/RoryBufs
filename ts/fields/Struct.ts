@@ -1,4 +1,4 @@
-import type { Field, Reader, Writer } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.ts";
 import { mapError, type ValueFromSchema } from "../utils.ts";
 
 export class Struct<Schema extends Record<string, Field<unknown>>>

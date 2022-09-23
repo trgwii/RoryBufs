@@ -15,7 +15,7 @@ await build({
 	package: {
 		// package.json properties
 		name: "rorybufs",
-		version: "0.0.2",
+		version: "0.0.3",
 		description: "An efficient binary serialization format.",
 		license: "MIT",
 		repository: {

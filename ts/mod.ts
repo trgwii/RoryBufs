@@ -1,5 +1,5 @@
 import { crc16 } from "./crc16.ts";
-import type { Field, Reader, Writer } from "./field.d.ts";
+import type { Field, Reader, Writer } from "./field.ts";
 import { assert, type ValueFromSchema } from "./utils.ts";
 import { Struct } from "./fields/Struct.ts";
 import { U16 } from "./fields/U16.ts";

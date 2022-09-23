@@ -1,4 +1,4 @@
-import type { Field, Reader, Writer } from "../field.d.ts";
+import type { Field, Reader, Writer } from "../field.ts";
 import { U32 } from "./U32.ts";
 import { mapError, type ValueFromField } from "../utils.ts";
 

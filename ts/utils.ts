@@ -1,4 +1,4 @@
-import type { Field, Reader, Writer } from "./field.d.ts";
+import type { Field, Reader, Writer } from "./field.ts";
 
 export function assert(
 	ok: boolean,

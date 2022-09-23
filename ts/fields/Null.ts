@@ -1,4 +1,4 @@
-import type { Field } from "../field.d.ts";
+import type { Field } from "../field.ts";
 import { assert } from "../utils.ts";
 
 export class Null implements Field<null> {

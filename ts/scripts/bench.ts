@@ -1,7 +1,7 @@
 // deno bench --unstable
 ///<reference lib="deno.unstable" />
 
-import type { Reader } from "../field.d.ts";
+import type { Reader } from "../field.ts";
 import { readAll, type ValueFromSchema } from "../utils.ts";
 
 import { Struct } from "../fields/Struct.ts";
