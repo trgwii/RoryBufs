@@ -11,6 +11,9 @@ export class I64 implements Field<bigint> {
 			0x10000000000000000n / 2n - 1n,
 		);
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: bigint, buf: DataView, offset = 0) {
 		buf.setBigInt64(offset, value, this.littleEndian);
 		return this.size;

@@ -20,6 +20,13 @@ export class Struct<Schema extends Record<string, Field<unknown>>>
 			);
 		}
 	}
+	requiredSize(data: ValueFromSchema<Schema>): number {
+		let size = 0;
+		for (const key in this.schema) {
+			size += this.schema[key].requiredSize(data[key]);
+		}
+		return size;
+	}
 	encode(
 		data: ValueFromSchema<Schema>,
 		dv: DataView,

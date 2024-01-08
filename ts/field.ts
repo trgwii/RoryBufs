@@ -8,9 +8,10 @@ export interface Reader {
 
 export interface Field<T> {
 	size: number | "variadic";
+	validate(value: T): void;
+	requiredSize(value: T): number;
 	encode(value: T, buf: DataView, offset?: number): number;
 	decode(buf: DataView, offset?: number): { bytesRead: number; value: T };
 	write(value: T, stream: Writer): Promise<number>;
 	read(stream: Reader): Promise<{ bytesRead: number; value: T }>;
-	validate(value: T): void;
 }

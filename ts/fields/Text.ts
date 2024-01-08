@@ -12,6 +12,9 @@ export class Text<Len extends Field<number | bigint>> implements Field<string> {
 		this.field.length.validate(value.length);
 		this.field.validate([...new TextEncoder().encode(value)]);
 	}
+	requiredSize(value: string): number {
+		return this.field.requiredSize([...new TextEncoder().encode(value)]);
+	}
 	encode(value: string, buf: DataView, offset = 0) {
 		return this.field.encode([...new TextEncoder().encode(value)], buf, offset);
 	}

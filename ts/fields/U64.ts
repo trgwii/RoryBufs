@@ -7,6 +7,9 @@ export class U64 implements Field<bigint> {
 	validate(value: bigint) {
 		assertWithin(value, 0n, 0xFFFFFFFFFFFFFFFFn);
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: bigint, buf: DataView, offset = 0) {
 		buf.setBigUint64(offset, value, this.littleEndian);
 		return this.size;

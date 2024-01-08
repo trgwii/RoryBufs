@@ -7,6 +7,9 @@ export class I32 implements Field<number> {
 	validate(value: number) {
 		assertWithin(value, -0x100000000 / 2, 0x100000000 / 2 - 1);
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: number, buf: DataView, offset = 0) {
 		buf.setInt32(offset, value, this.littleEndian);
 		return this.size;

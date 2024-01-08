@@ -10,6 +10,9 @@ export class FixedArray<Length extends number, T>
 	) {
 		this.size = length * field.size;
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	validate(items: T[]) {
 		assert(this.length === items.length, "Wrong array size");
 		for (let i = 0; i < items.length; i++) {

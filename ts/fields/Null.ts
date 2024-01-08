@@ -6,6 +6,9 @@ export class Null implements Field<null> {
 	validate(value: null) {
 		assert(value == null, "Non-null value passed to null");
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: null) {
 		return this.size;
 	}

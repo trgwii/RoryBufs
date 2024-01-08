@@ -6,6 +6,9 @@ export class U8 implements Field<number> {
 	validate(value: number) {
 		assertWithin(value, 0, 0xFF);
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: number, buf: DataView, offset = 0) {
 		buf.setUint8(offset, value);
 		return this.size;

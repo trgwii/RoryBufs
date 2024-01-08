@@ -7,6 +7,9 @@ export class I16 implements Field<number> {
 	validate(value: number) {
 		assertWithin(value, -0x10000 / 2, 0x10000 / 2 - 1);
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: number, buf: DataView, offset = 0) {
 		buf.setInt16(offset, value, this.littleEndian);
 		return this.size;

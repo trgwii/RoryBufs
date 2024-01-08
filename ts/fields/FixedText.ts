@@ -9,6 +9,9 @@ export class FixedText implements Field<string> {
 			`string is too long (got: ${value.length}, max: ${this.size})`,
 		);
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: string, buf: DataView, offset = 0) {
 		this.validate(value);
 		const dest = new Uint8Array(buf.buffer, buf.byteOffset + offset, this.size);

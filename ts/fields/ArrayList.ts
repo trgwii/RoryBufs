@@ -22,6 +22,13 @@ export class ArrayList<
 			);
 		}
 	}
+	requiredSize(items: ValueFromField<F>[]): number {
+		let size = this.length.requiredSize(items.length);
+		for (const value of items) {
+			size += this.field.requiredSize(value);
+		}
+		return size;
+	}
 	encode(items: ValueFromField<F>[], buf: DataView, offset = 0) {
 		const initialOffset = offset;
 		offset += this.length.encode(items.length, buf, offset);

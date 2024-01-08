@@ -6,6 +6,9 @@ export class F32 implements Field<number> {
 	validate(value: number) {
 		assert(!Number.isNaN(value), "NaN");
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: number, buf: DataView, offset = 0) {
 		buf.setFloat32(offset, value);
 		return this.size;

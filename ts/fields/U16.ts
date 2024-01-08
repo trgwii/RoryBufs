@@ -7,6 +7,9 @@ export class U16 implements Field<number> {
 	validate(value: number) {
 		assertWithin(value, 0, 0xFFFF);
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: number, buf: DataView, offset = 0) {
 		buf.setUint16(offset, value, this.littleEndian);
 		return this.size;

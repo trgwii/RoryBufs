@@ -22,6 +22,9 @@ export class Buf<
 			? this.struct.size + 4
 			: this.struct.size;
 	}
+	requiredSize(data: ValueFromSchema<Schema>): number {
+		return this.struct.requiredSize(data) + 4;
+	}
 	validate(data: ValueFromSchema<Schema>) {
 		this.struct.validate(data);
 	}
@@ -29,11 +32,12 @@ export class Buf<
 		data: ValueFromSchema<Schema>,
 		bufOrMax?: number | Uint8Array,
 	) {
-		if (!bufOrMax && this.size === "variadic") {
-			throw new Error("bufOrMax is required for variadic sizes");
-		}
 		this.struct.validate(data);
-		const size = typeof bufOrMax === "number" ? bufOrMax : this.size as number;
+		const size = typeof bufOrMax === "number"
+			? bufOrMax
+			: this.size === "variadic"
+			? this.requiredSize(data)
+			: this.size;
 		const buf = bufOrMax instanceof Uint8Array
 			? bufOrMax
 			: new Uint8Array(size);

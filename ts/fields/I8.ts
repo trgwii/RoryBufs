@@ -6,6 +6,9 @@ export class I8 implements Field<number> {
 	validate(value: number) {
 		assertWithin(value, -0x100 / 2, 0x100 / 2 - 1);
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: number, buf: DataView, offset = 0) {
 		buf.setInt8(offset, value);
 		return this.size;

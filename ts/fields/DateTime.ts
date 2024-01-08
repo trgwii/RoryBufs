@@ -6,6 +6,9 @@ export class DateTime implements Field<Date> {
 	validate(value: Date) {
 		assert(!Number.isNaN(value.getTime()), "Invalid Date");
 	}
+	requiredSize(): number {
+		return this.size;
+	}
 	encode(value: Date, buf: DataView, offset = 0) {
 		buf.setFloat64(offset, value.getTime());
 		return this.size;

@@ -4,6 +4,10 @@ import { writeAll } from "../utils.ts";
 export class CString implements Field<string> {
 	readonly size = "variadic";
 	validate() {}
+	requiredSize(value: string): number {
+		// TODO: encoded UTF-8 length
+		return value.length + 1;
+	}
 	encode(value: string, buf: DataView, offset = 0) {
 		const _buf = new Uint8Array(
 			buf.buffer,

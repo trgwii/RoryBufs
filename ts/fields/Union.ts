@@ -17,6 +17,10 @@ export class Union<Fields extends Field<unknown>[]>
 		assertWithin(index, 0, this.fields.length);
 		this.fields[index].validate(value);
 	}
+	requiredSize(value: ValueFromFields<Fields>): number {
+		const index = this.tag(value);
+		return this.fields[index].requiredSize(value) + 1;
+	}
 	encode(value: ValueFromFields<Fields>, buf: DataView, offset = 0) {
 		const index = this.tag(value);
 		const initialOffset = offset;
