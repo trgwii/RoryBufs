@@ -23,6 +23,7 @@ export class Buf<
 			: this.struct.size;
 	}
 	requiredSize(data: ValueFromSchema<Schema>): number {
+		if (this.size !== "variadic") return this.size;
 		return this.struct.requiredSize(data) + 4;
 	}
 	validate(data: ValueFromSchema<Schema>) {

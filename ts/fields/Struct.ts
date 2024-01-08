@@ -21,6 +21,7 @@ export class Struct<Schema extends Record<string, Field<unknown>>>
 		}
 	}
 	requiredSize(data: ValueFromSchema<Schema>): number {
+		if (this.size !== "variadic") return this.size;
 		let size = 0;
 		for (const key in this.schema) {
 			size += this.schema[key].requiredSize(data[key]);
